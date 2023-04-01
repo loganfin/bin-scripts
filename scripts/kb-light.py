@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Based on a script from 
+# Based on a script from
 #   https://wiki.archlinux.org/title/Keyboard_backlight#D-Bus
 
 # Depends on upower and dbus-python
@@ -22,7 +22,7 @@ def kb_light_set(delta):
         current = new
         kbd_backlight.SetBrightness(current)
 
-if __name__ ==  '__main__':
+if __name__ == '__main__':
     if len(sys.argv) == 2 or len(sys.argv) == 3:
         if sys.argv[1] == "--up" or sys.argv[1] == "-u":
             if len(sys.argv) == 3:
