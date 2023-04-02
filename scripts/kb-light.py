@@ -22,6 +22,21 @@ def kb_light_set(delta):
         current = new
         kbd_backlight.SetBrightness(current)
 
+def kb_light_toggle(level):
+    bus = dbus.SystemBus()
+    kbd_backlight_proxy = bus.get_object('org.freedesktop.UPower', '/org/freedesktop/UPower/KbdBacklight')
+    kbd_backlight = dbus.Interface(kbd_backlight_proxy, 'org.freedesktop.UPower.KbdBacklight')
+
+    current = kbd_backlight.GetBrightness()
+    maximum = kbd_backlight.GetMaxBrightness()
+    if current == 0:
+        new = max(0, min(current + level, maximum))
+        if 0 <= new <= maximum:
+            current = new
+            kbd_backlight.SetBrightness(current)
+    else:
+        kbd_backlight.SetBrightness(0)
+
 if __name__ == '__main__':
     if len(sys.argv) == 2 or len(sys.argv) == 3:
         if sys.argv[1] == "--up" or sys.argv[1] == "-u":
@@ -34,11 +49,14 @@ if __name__ == '__main__':
                 kb_light_set(-int(sys.argv[2]))
             else:
                 kb_light_set(-1)
+        elif sys.argv[1] == "--toggle" or sys.argv[1] == "-t":
+            kb_light_toggle(1)
         elif sys.argv[1] == "--help" or sys.argv[1] == "-h":
             print("Usage: kb-light.py [option]\n")
             print("  -h, --help for help")
             print("  -u, --down to decrease")
-            print("  -d, --up to increase\n")
+            print("  -d, --up to increase")
+            print("  -t, --toggle  to toggle\n")
         else:
             print("Unknown argument:", sys.argv[1])
     else:
